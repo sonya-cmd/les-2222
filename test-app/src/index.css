@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  font-family: 'Comic Sans MS', 'Patrick Hand', cursive;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: 'Comic Sans MS', 'Patrick Hand', cursive;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Comic Sans MS', 'Patrick Hand', cursive !important;
+}

@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Kharkiv",
+			"country": {
+				"code": "UA",
+				"name": "Ukraine"
+			},
+			"subdivision": {
+				"code": "63",
+				"name": "Kharkivs’ka Oblast’"
+			},
+			"timezone": "Europe/Kyiv",
+			"latitude": 49.982,
+			"longitude": 36.2566,
+			"postalCode": "61118"
+		},
+		"timestamp": 1752695976593
+	}
+}
