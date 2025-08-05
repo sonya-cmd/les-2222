@@ -7,8 +7,12 @@ import { GlobalStyle } from './global.styles';
 
 import SHOP_DATA from './shop-data'; // ✅ путь к shop-data
 import { addCollectionAndDocuments } from './utils/firebase/firebase.utils';
+import {
+  onAuthStateChangedListener,
+  createUserDocumentFromAuth
+} from './utils/firebase/firebase.utils';
 
-import { checkUserSession, setCurrentUser } from './store/user/user.action';
+import { setCurrentUser } from './store/user/user.action';
 
 const Shop = lazy(() => import('./routes/shop/shop.component'));
 const Checkout = lazy(() => import('./routes/checkout/checkout.component'));
@@ -16,34 +20,28 @@ const Navigation = lazy(() => import('./routes/home/navigation/navigation.compon
 const Home = lazy(() => import('./routes/home/home.component'));
 const Authentication = lazy(() => import('./routes/home/authentication/authentication.component'));
 
-import {
-  onAuthStateChangedListener,
-  createUserDocumentFromAuth
-} from './utils/firebase/firebase.utils';
-
 const App = () => {
   const dispatch = useDispatch();
 
- useEffect(() => {
-  const unsubscribe = onAuthStateChangedListener(async (user) => {
-    if (user) {
-      const userDocRef = await createUserDocumentFromAuth(user);
-      const userData = userDocRef?.data();
-      if (userData) {
-        dispatch(setCurrentUser({
-          displayName: user.displayName ?? '',
-          email: user.email ?? '',
-          createdAt: userData.createdAt,
-        }));
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedListener(async (user) => {
+      if (user) {
+        const userDocRef = await createUserDocumentFromAuth(user);
+        const userData = userDocRef?.data();
+        if (userData) {
+          dispatch(setCurrentUser({
+            displayName: user.displayName ?? '',
+            email: user.email ?? '',
+            createdAt: userData.createdAt,
+          }));
+        }
+      } else {
+        dispatch(setCurrentUser(null));
       }
-    } else {
-      dispatch(setCurrentUser(null));
-    }
-  });
+    });
 
-  return unsubscribe;
-}, [dispatch]);
-
+    return unsubscribe;
+  }, [dispatch]);
 
   // ✅ Однократная загрузка SHOP_DATA в Firestore
   useEffect(() => {

@@ -1,16 +1,11 @@
-import './cart-item.styles.tsx';
-
 import { FC, memo } from 'react';
 
 import { CartItem as TCartItem } from '../../store/cart/cart.types';
+import { CartItemContainer, ItemDetails } from './cart-item.styles';
 
 type CartItemProps = {
   cartItem: TCartItem;
 };
-
-// JSX требует, чтобы теги (например, CartItemContainer) были определены или импортированы.
-// Предположим, ты забыл импортировать их:
-import { CartItemContainer, ItemDetails } from './cart-item.styles';
 
 const CartItem: FC<CartItemProps> = memo(({ cartItem }) => {
   const { name, imageUrl, price, quantity } = cartItem;
