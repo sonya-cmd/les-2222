@@ -1,0 +1,8 @@
+[functions]
+  directory = "netlify/functions"
+
+[dev]
+  functions = "netlify/functions"
+  command = "npm run start"
+  port = 8888       # ✅ порт, на котором будет работать Netlify Dev
+  targetPort = 3000 # ✅ порт, на котором работает CRA (React)

@@ -17,6 +17,7 @@ const PaymentForm = () => {
   const amount = useSelector(selectCartTotal);
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false); // ✅ Добавлено состояние
 
   const paymentHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,7 +59,7 @@ const PaymentForm = () => {
     if (paymentResult.error) {
       alert(paymentResult.error.message);
     } else if (paymentResult.paymentIntent.status === 'succeeded') {
-      alert('Payment Successful');
+      setPaymentSuccess(true); // ✅ Устанавливаем успех оплаты
     }
   };
 
@@ -73,6 +74,11 @@ const PaymentForm = () => {
         >
           Pay Now
         </PaymentButton>
+        {paymentSuccess && (
+          <div style={{ color: 'green', textAlign: 'center', marginTop: '15px' }}>
+            ✅ Оплата прошла успешно!
+          </div>
+        )}
       </FormContainer>
     </PaymentFormContainer>
   );

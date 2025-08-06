@@ -5,14 +5,10 @@ import { Routes, Route } from 'react-router-dom';
 import Spinner from './components/spinner/spinner.component';
 import { GlobalStyle } from './global.styles';
 
-import SHOP_DATA from './shop-data'; // ✅ путь к shop-data
+import SHOP_DATA from './shop-data';
 import { addCollectionAndDocuments } from './utils/firebase/firebase.utils';
-import {
-  onAuthStateChangedListener,
-  createUserDocumentFromAuth
-} from './utils/firebase/firebase.utils';
 
-import { setCurrentUser } from './store/user/user.action';
+import { checkUserSession } from './store/user/user.action';
 
 const Shop = lazy(() => import('./routes/shop/shop.component'));
 const Checkout = lazy(() => import('./routes/checkout/checkout.component'));
@@ -24,26 +20,9 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener(async (user) => {
-      if (user) {
-        const userDocRef = await createUserDocumentFromAuth(user);
-        const userData = userDocRef?.data();
-        if (userData) {
-          dispatch(setCurrentUser({
-            displayName: user.displayName ?? '',
-            email: user.email ?? '',
-            createdAt: userData.createdAt,
-          }));
-        }
-      } else {
-        dispatch(setCurrentUser(null));
-      }
-    });
-
-    return unsubscribe;
+    dispatch(checkUserSession());
   }, [dispatch]);
 
-  // ✅ Однократная загрузка SHOP_DATA в Firestore
   useEffect(() => {
     addCollectionAndDocuments('categories', SHOP_DATA);
   }, []);

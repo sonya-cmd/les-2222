@@ -5,13 +5,7 @@ import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component';
 import { BUTTON_TYPE_CLASSES } from '../button/button.types';
 
-import {
-  signInAuthUserWithEmailAndPassword,
-  signInWithGooglePopup,
-  createUserDocumentFromAuth,
-} from '../../utils/firebase/firebase.utils';
-
-import { setCurrentUser } from '../../store/user/user.action';
+import { emailSignInStart, googleSignInStart } from '../../store/user/user.action';
 
 import { SignInContainer, ButtonsContainer } from './sign-in-form.styles';
 
@@ -25,47 +19,16 @@ const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-  const resetFormFields = () => {
-    setFormFields(defaultFormFields);
-  };
+  const resetFormFields = () => setFormFields(defaultFormFields);
 
-  const signInWithGoogle = async () => {
-    try {
-      const { user } = await signInWithGooglePopup();
-      const userDoc = await createUserDocumentFromAuth(user);
-      const userData = userDoc?.data();
-      if (userData) {
-        dispatch(setCurrentUser({
-          displayName: user.displayName ?? '',
-          email: user.email ?? '',
-          createdAt: userData.createdAt,
-        }));
-      }
-    } catch (error) {
-      console.log('Google sign-in error', error);
-    }
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const userCredential = await signInAuthUserWithEmailAndPassword(email, password);
-      if (!userCredential) return;
+    dispatch(emailSignInStart(email, password));
+    resetFormFields();
+  };
 
-      const { user } = userCredential;
-      const userDoc = await createUserDocumentFromAuth(user);
-      const userData = userDoc?.data();
-      if (userData) {
-        dispatch(setCurrentUser({
-          displayName: user.displayName ?? '',
-          email: user.email ?? '',
-          createdAt: userData.createdAt,
-        }));
-      }
-      resetFormFields();
-    } catch (error) {
-      console.log('Email/password sign-in error', error);
-    }
+  const signInWithGoogle = () => {
+    dispatch(googleSignInStart());
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -97,12 +60,12 @@ const SignInForm = () => {
         <ButtonsContainer>
           <Button type="submit">Sign In</Button>
           <Button
-  type="button"
-  buttonType="google"
-  onClick={signInWithGoogle}
->
-  Google sign in
-</Button>
+            type="button"
+            buttonType="google"
+            onClick={signInWithGoogle}
+          >
+            Google sign in
+          </Button>
         </ButtonsContainer>
       </form>
     </SignInContainer>
